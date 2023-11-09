@@ -8,8 +8,8 @@
   },
   "permissions": [
     "tabGroups",
-    "storage",
-    "tabs"
+    "tabs",
+    "storage"
   ],
   "action": {
     "default_popup": "popup.html",
@@ -17,16 +17,5 @@
   },
   "icons": {
     "128": "icon-128.png"
-  },
-  "devtools_page": "devtools.html",
-  "web_accessible_resources": [
-    {
-      "resources": [
-        "content.styles.css",
-        "icon-128.png",
-        "icon-34.png"
-      ],
-      "matches": []
-    }
-  ]
+  }
 }
