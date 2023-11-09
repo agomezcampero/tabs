@@ -3,28 +3,39 @@ import COLORS from '../Utils/Colors';
 import './Popup.scss';
 import Tabs from './Tabs';
 import PatternSelector from './PatternSelector';
+import addTabToTabGroup from '../Utils/addTabToTabGroup';
+import debounce from '../Utils/debounce';
+
+const debouncedStorageSet = debounce((key, data) => {
+  chrome.storage.sync.set({ [key]: data });
+}, 500);
 
 
 const Popup = () => {
   const [ruleSets, setRuleSets] = useState([]);
   const isLoadingRuleSets = !ruleSets.length;
 
-  const [currentUrl, setCurrentUrl] = useState(null);
-  const currentHost = currentUrl && new URL(currentUrl).host;
-  const [isCurrentUrlMissingLabel, setIsCurrentUrlMissingLabel] = useState(true);
-  const isLoadingCurrentUrl = !currentUrl;
+  const [currentTab, setCurrentTab] = useState(null);
+  const currentUrl = currentTab?.url;
+  const currentHost = currentUrl && new URL(currentTab.url).host;
+  const [isCurrentTabMissingLabel, setIsCurrentTabMissingLabel] = useState(true);
+  const isLoadingCurrentTab = !currentTab;
 
-  const isLoading = isLoadingRuleSets || isLoadingCurrentUrl;
+  const isLoading = isLoadingRuleSets || isLoadingCurrentTab;
 
   const [selectedColor, setSelectedColor] = useState(null);
   const selectedRuleSet = ruleSets.find((ruleSet) => ruleSet.color === selectedColor);
 
-  const setColorAndAddToHost = (color) => {
+  const selectAndAddCurrentTabToColor = (color) => {
     setSelectedColor(color);
     const ruleSet = ruleSets.find((ruleSet) => ruleSet.color === color);
     const newRuleSet = { ...ruleSet, patterns: [...ruleSet.patterns, currentHost] };
+    if (newRuleSet.patterns.length === 1 && !newRuleSet.title) {
+      newRuleSet.title = currentTab.title;
+    }
     updateRuleSet(newRuleSet);
-    setIsCurrentUrlMissingLabel(false);
+    setIsCurrentTabMissingLabel(false);
+    addTabToTabGroup(currentTab.id, newRuleSet);
   }
 
   useEffect(() => {
@@ -42,7 +53,7 @@ const Popup = () => {
 
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs.length) {
-        setCurrentUrl(tabs[0].url);
+        setCurrentTab(tabs[0]);
       }
     });
   }, [])
@@ -51,7 +62,7 @@ const Popup = () => {
     if (!isLoading) {
       const currentUrlRuleSet = ruleSets.find((ruleSet) => ruleSet.patterns.some((pattern) => currentUrl.includes(pattern)));
       if (currentUrlRuleSet) {
-        setIsCurrentUrlMissingLabel(false);
+        setIsCurrentTabMissingLabel(false);
         setSelectedColor(currentUrlRuleSet.color);
       }
     }
@@ -64,7 +75,7 @@ const Popup = () => {
       }
       return ruleSet;
     });
-    chrome.storage.sync.set({ [newRuleSet.color]: { title: newRuleSet.title, patterns: newRuleSet.patterns } });
+    debouncedStorageSet(newRuleSet.color, { title: newRuleSet.title, patterns: newRuleSet.patterns })
     setRuleSets(newRuleSets);
   }
 
@@ -77,7 +88,7 @@ const Popup = () => {
       <Tabs
         ruleSets={ruleSets}
         selectedRuleSet={selectedRuleSet}
-        setSelectedColor={isCurrentUrlMissingLabel && currentHost ? setColorAndAddToHost : setSelectedColor}
+        setSelectedColor={isCurrentTabMissingLabel && currentHost ? selectAndAddCurrentTabToColor : setSelectedColor}
         updateRuleSet={updateRuleSet}
       />
       {selectedRuleSet && (
@@ -88,17 +99,17 @@ const Popup = () => {
           onSave={(patterns) => updateRuleSet({ ...selectedRuleSet, patterns })}
         />
       )}
-      {!selectedRuleSet && isCurrentUrlMissingLabel && (
+      {!selectedRuleSet && isCurrentTabMissingLabel && (
         <>
           <div className='Title'>
             Select label for <span className='Host'>{currentHost}</span>
           </div>
-          <div className='Subtitle' onClick={() => setIsCurrentUrlMissingLabel(false)}>
+          <div className='Subtitle' onClick={() => setIsCurrentTabMissingLabel(false)}>
             or click here to not add this site to a label
           </div>
         </>
       )}
-      {!selectedRuleSet && !isCurrentUrlMissingLabel && (
+      {!selectedRuleSet && !isCurrentTabMissingLabel && (
         <div className='Subtitle'>
           Click any label to change the title and configure the urls it applies to
         </div>

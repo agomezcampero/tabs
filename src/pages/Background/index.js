@@ -1,6 +1,7 @@
 // ruleSet => title: string, color: string, patterns: string[]
 
 import COLORS from '../Utils/Colors'
+import addTabToTabGroup from '../Utils/addTabToTabGroup'
 
 let ruleSets = []
 
@@ -10,21 +11,7 @@ const onUrlChange = async (tabId, changeInfo) => {
   if (!url) return
 
   const ruleSet = ruleSets.find(ruleSet => ruleSet.patterns.some(pattern => url.includes(pattern)))
-  if (ruleSet) {
-    const { color, title } = ruleSet
-
-    const group = await chrome.tabGroups.query({ color })
-
-    if (group.length) {
-      chrome.tabs.group({ groupId: group[0].id, tabIds: [tabId] })
-    } else {
-      chrome.tabs.group({ tabIds: [tabId] }, groupId => {
-        chrome.tabGroups.update(groupId, { color, title })
-      })
-    }
-  } else {
-    chrome.tabs.ungroup(tabId)
-  }
+  addTabToTabGroup(tabId, ruleSet)
 }
 
 const syncAndListen = () => {
@@ -40,7 +27,17 @@ const syncAndListen = () => {
   });
 }
 
-chrome.storage.sync.onChanged.addListener(() => {
+chrome.storage.sync.onChanged.addListener((changes) => {
+  Object.entries(changes).forEach(([key, { newValue, oldValue }]) => {
+    if (COLORS.includes(key) && newValue?.title !== oldValue?.title) {
+      chrome.tabGroups.query({ color: key }, (groups) => {
+        groups.forEach((group) => {
+          chrome.tabGroups.update(group.id, { title: newValue.title })
+        })
+      })
+    }
+  })
+
   chrome.tabs.onUpdated.removeListener(onUrlChange)
   syncAndListen()
 })
