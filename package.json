@@ -1,6 +1,6 @@
 {
   "name": "stego-tabs",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A chrome extension that automatically groups your tabs together",
   "license": "MIT",
   "repository": {
