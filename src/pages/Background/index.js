@@ -5,13 +5,13 @@ import addTabToTabGroup from '../Utils/addTabToTabGroup'
 
 let ruleSets = []
 
-const onUrlChange = async (tabId, changeInfo) => {
+const onUrlChange = async (_tabId, changeInfo, tab) => {
   const url = changeInfo.url
 
   if (!url) return
 
   const ruleSet = ruleSets.find(ruleSet => ruleSet.patterns.some(pattern => url.includes(pattern)))
-  addTabToTabGroup(tabId, ruleSet)
+  addTabToTabGroup(tab, ruleSet)
 }
 
 const syncAndListen = () => {

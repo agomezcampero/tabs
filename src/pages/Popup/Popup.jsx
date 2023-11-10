@@ -35,7 +35,7 @@ const Popup = () => {
     }
     updateRuleSet(newRuleSet);
     setIsCurrentTabMissingLabel(false);
-    addTabToTabGroup(currentTab.id, newRuleSet);
+    addTabToTabGroup(currentTab, newRuleSet);
   }
 
   useEffect(() => {
