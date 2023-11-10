@@ -1,6 +1,6 @@
 {
   "select_label_for": "Select label for",
-  "click_to_not_add": "or click here to not add this site to a label",
+  "click_to_not_add": "If you don't want to add this site, click here",
   "click_any_label": "Click any label to change the title and configure the urls it applies to",
   "pattern_placeholder": "Enter a URL domain",
   "delete_all_patterns": "Delete all URL patterns"
