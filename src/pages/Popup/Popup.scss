@@ -147,7 +147,15 @@ $colors: (
   }
 }
 
-.DeleteAllBtn {
+.BtnSeparator {
+  margin-top: 10px;
+  color: #e8eaed;
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+.DeleteAllBtn,
+.OthersBtn {
   margin-top: 10px;
   color: #e8eaed;
   cursor: pointer;

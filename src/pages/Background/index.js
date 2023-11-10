@@ -4,6 +4,7 @@ import COLORS from '../Utils/Colors'
 import addTabsToTabGroup from '../Utils/addTabsToTabGroup'
 
 let ruleSets = []
+let matchAllOthersRuleSet = null
 
 const onUrlChange = async (_tabId, changeInfo, tab) => {
   const url = changeInfo.url
@@ -11,7 +12,7 @@ const onUrlChange = async (_tabId, changeInfo, tab) => {
   if (!url) return
 
   const ruleSet = ruleSets.find(ruleSet => ruleSet.patterns.some(pattern => url.includes(pattern)))
-  addTabsToTabGroup([tab], ruleSet)
+  addTabsToTabGroup([tab], ruleSet || matchAllOthersRuleSet)
 }
 
 const syncAndListen = () => {
@@ -22,6 +23,8 @@ const syncAndListen = () => {
       color,
       ...data
     }));
+
+    matchAllOthersRuleSet = ruleSets.find(ruleSet => ruleSet.matchAllOthers)
 
     chrome.tabs.onUpdated.addListener(onUrlChange)
   });

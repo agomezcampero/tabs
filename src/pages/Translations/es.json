@@ -3,5 +3,9 @@
   "click_to_not_add": "Si no quieres agregar el sitio, haz click aquí",
   "click_any_label": "Haz click en una etiqueta para asignar el título y agregar sitios",
   "pattern_placeholder": "Ingresa un URL o patrón",
-  "delete_all_patterns": "Eliminar todas las URL"
+  "delete_all_patterns": "Eliminar todas las URL",
+  "use_for_others": "Usar para todos los otros sitios",
+  "use_for_others_description": "Esta etiqueta se va a usar para cualquier sitio que no tenga una etiqueta específica.",
+  "remove_as_others": "Haz click aquí para eliminar el uso para todos los otros sitios",
+  "others": "Otros"
 }

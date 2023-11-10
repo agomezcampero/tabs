@@ -27,9 +27,14 @@ const Popup = () => {
   const [selectedColor, setSelectedColor] = useState(null);
   const selectedRuleSet = ruleSets.find((ruleSet) => ruleSet.color === selectedColor);
 
+  const hasOthersRuleSet = ruleSets.some((ruleSet) => ruleSet.matchAllOthers);
+
   const selectAndAddCurrentTabToColor = (color) => {
     setSelectedColor(color);
     const ruleSet = ruleSets.find((ruleSet) => ruleSet.color === color);
+
+    if (ruleSet.matchAllOthers) return
+
     const newRuleSet = { ...ruleSet, patterns: [...ruleSet.patterns, currentHost] };
     if (newRuleSet.patterns.length === 1 && !newRuleSet.title) {
       newRuleSet.title = currentTab.title;
@@ -78,7 +83,11 @@ const Popup = () => {
       }
       return ruleSet;
     });
-    debouncedStorageSet(newRuleSet.color, { title: newRuleSet.title, patterns: newRuleSet.patterns })
+    debouncedStorageSet(newRuleSet.color, {
+      title: newRuleSet.title,
+      patterns: newRuleSet.patterns,
+      matchAllOthers: newRuleSet.matchAllOthers,
+    })
     setRuleSets(newRuleSets);
   }
 
@@ -99,7 +108,8 @@ const Popup = () => {
           key={selectedRuleSet.color}
           currentUrl={currentUrl}
           ruleSet={selectedRuleSet}
-          onSave={(patterns) => updateRuleSet({ ...selectedRuleSet, patterns })}
+          onSave={(newRuleSet) => updateRuleSet({ ...selectedRuleSet, ...newRuleSet })}
+          hasOthersRuleSet={hasOthersRuleSet}
         />
       )}
       {!selectedRuleSet && isCurrentTabMissingLabel && (
