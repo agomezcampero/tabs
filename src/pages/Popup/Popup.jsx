@@ -3,8 +3,9 @@ import COLORS from '../Utils/Colors';
 import './Popup.scss';
 import Tabs from './Tabs';
 import PatternSelector from './PatternSelector';
-import addTabToTabGroup from '../Utils/addTabToTabGroup';
+import addTabsToTabGroup from '../Utils/addTabsToTabGroup';
 import debounce from '../Utils/debounce';
+import t from '../Translations/t';
 
 const debouncedStorageSet = debounce((key, data) => {
   chrome.storage.sync.set({ [key]: data });
@@ -26,16 +27,23 @@ const Popup = () => {
   const [selectedColor, setSelectedColor] = useState(null);
   const selectedRuleSet = ruleSets.find((ruleSet) => ruleSet.color === selectedColor);
 
+  const hasOthersRuleSet = ruleSets.some((ruleSet) => ruleSet.matchAllOthers);
+
   const selectAndAddCurrentTabToColor = (color) => {
     setSelectedColor(color);
     const ruleSet = ruleSets.find((ruleSet) => ruleSet.color === color);
+
+    if (ruleSet.matchAllOthers) return
+
     const newRuleSet = { ...ruleSet, patterns: [...ruleSet.patterns, currentHost] };
     if (newRuleSet.patterns.length === 1 && !newRuleSet.title) {
       newRuleSet.title = currentTab.title;
     }
     updateRuleSet(newRuleSet);
     setIsCurrentTabMissingLabel(false);
-    addTabToTabGroup(currentTab.id, newRuleSet);
+    chrome.tabs.query({ currentWindow: true, url: `*://*.${currentHost}/*` }, (tabs) => {
+      addTabsToTabGroup(tabs, newRuleSet);
+    })
   }
 
   useEffect(() => {
@@ -75,7 +83,11 @@ const Popup = () => {
       }
       return ruleSet;
     });
-    debouncedStorageSet(newRuleSet.color, { title: newRuleSet.title, patterns: newRuleSet.patterns })
+    debouncedStorageSet(newRuleSet.color, {
+      title: newRuleSet.title,
+      patterns: newRuleSet.patterns,
+      matchAllOthers: newRuleSet.matchAllOthers,
+    })
     setRuleSets(newRuleSets);
   }
 
@@ -96,22 +108,23 @@ const Popup = () => {
           key={selectedRuleSet.color}
           currentUrl={currentUrl}
           ruleSet={selectedRuleSet}
-          onSave={(patterns) => updateRuleSet({ ...selectedRuleSet, patterns })}
+          onSave={(newRuleSet) => updateRuleSet({ ...selectedRuleSet, ...newRuleSet })}
+          hasOthersRuleSet={hasOthersRuleSet}
         />
       )}
       {!selectedRuleSet && isCurrentTabMissingLabel && (
         <>
           <div className='Title'>
-            Select label for <span className='Host'>{currentHost}</span>
+            {t('select_label_for')}&nbsp;<span className='Host'>{currentHost}</span>
           </div>
           <div className='Subtitle' onClick={() => setIsCurrentTabMissingLabel(false)}>
-            or click here to not add this site to a label
+            {t('click_to_not_add')}
           </div>
         </>
       )}
       {!selectedRuleSet && !isCurrentTabMissingLabel && (
         <div className='Subtitle'>
-          Click any label to change the title and configure the urls it applies to
+          {t('click_any_label')}
         </div>
       )}
     </div>

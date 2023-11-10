@@ -146,3 +146,23 @@ $colors: (
     border: 1px solid #e8eaed;
   }
 }
+
+.BtnSeparator {
+  margin-top: 10px;
+  color: #e8eaed;
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+.DeleteAllBtn,
+.OthersBtn {
+  margin-top: 10px;
+  color: #e8eaed;
+  cursor: pointer;
+  font-size: 12px;
+  opacity: 0.5;
+
+  &:hover {
+    opacity: 1;
+  }
+}

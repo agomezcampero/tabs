@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 const Tabs = ({ ruleSets, selectedRuleSet, setSelectedColor, updateRuleSet }) => (
   <div className='Tabs'>

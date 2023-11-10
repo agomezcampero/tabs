@@ -1,0 +1,11 @@
+{
+  "select_label_for": "Select label for",
+  "click_to_not_add": "If you don't want to add this site, click here",
+  "click_any_label": "Click any label to change the title and configure the urls it applies to",
+  "pattern_placeholder": "Enter a URL domain",
+  "delete_all_patterns": "Delete all URL patterns",
+  "use_for_others": "Use for all other sites",
+  "use_for_others_description": "This label will be used for any sites that don't match any other label",
+  "remove_as_others": "Click here to stop using this label to match all other sites",
+  "others": "Others"
+}
