@@ -5,6 +5,7 @@ import Tabs from './Tabs';
 import PatternSelector from './PatternSelector';
 import addTabToTabGroup from '../Utils/addTabToTabGroup';
 import debounce from '../Utils/debounce';
+import t from '../Translations/t';
 
 const debouncedStorageSet = debounce((key, data) => {
   chrome.storage.sync.set({ [key]: data });
@@ -102,16 +103,16 @@ const Popup = () => {
       {!selectedRuleSet && isCurrentTabMissingLabel && (
         <>
           <div className='Title'>
-            Select label for <span className='Host'>{currentHost}</span>
+            {t('select_label_for')}&nbsp;<span className='Host'>{currentHost}</span>
           </div>
           <div className='Subtitle' onClick={() => setIsCurrentTabMissingLabel(false)}>
-            or click here to not add this site to a label
+            {t('click_to_not_add')}
           </div>
         </>
       )}
       {!selectedRuleSet && !isCurrentTabMissingLabel && (
         <div className='Subtitle'>
-          Click any label to change the title and configure the urls it applies to
+          {t('click_any_label')}
         </div>
       )}
     </div>

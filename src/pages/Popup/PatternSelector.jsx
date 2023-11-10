@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import t from '../Translations/t';
 
 const PatternSelector = ({ ruleSet, onSave, currentUrl }) => {
   const [patterns, setPatterns] = useState(ruleSet?.patterns || []);
@@ -27,7 +28,7 @@ const PatternSelector = ({ ruleSet, onSave, currentUrl }) => {
               onSave(newPatterns.filter(Boolean));
             }}
             onBlur={() => onSave(patterns.filter(Boolean))}
-            placeholder='Enter a URL domain'
+            placeholder={t('pattern_placeholder')}
           />
         </div>
       ))}

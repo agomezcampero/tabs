@@ -1,0 +1,6 @@
+{
+  "select_label_for": "Selecciona una etiqueta para",
+  "click_to_not_add": "o haz click aquí para no agregar una etiqueta a este sitio",
+  "click_any_label": "Haz click en una etiqueta para cambiar el título y configurar las páginas que se deben agrupar",
+  "pattern_placeholder": "Ingresa un URL o patrón"
+}
