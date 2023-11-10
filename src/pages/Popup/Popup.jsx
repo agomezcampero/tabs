@@ -3,7 +3,7 @@ import COLORS from '../Utils/Colors';
 import './Popup.scss';
 import Tabs from './Tabs';
 import PatternSelector from './PatternSelector';
-import addTabToTabGroup from '../Utils/addTabToTabGroup';
+import addTabsToTabGroup from '../Utils/addTabsToTabGroup';
 import debounce from '../Utils/debounce';
 import t from '../Translations/t';
 
@@ -36,7 +36,9 @@ const Popup = () => {
     }
     updateRuleSet(newRuleSet);
     setIsCurrentTabMissingLabel(false);
-    addTabToTabGroup(currentTab, newRuleSet);
+    chrome.tabs.query({ currentWindow: true, url: `*://*.${currentHost}/*` }, (tabs) => {
+      addTabsToTabGroup(tabs, newRuleSet);
+    })
   }
 
   useEffect(() => {

@@ -1,7 +1,7 @@
 // ruleSet => title: string, color: string, patterns: string[]
 
 import COLORS from '../Utils/Colors'
-import addTabToTabGroup from '../Utils/addTabToTabGroup'
+import addTabsToTabGroup from '../Utils/addTabsToTabGroup'
 
 let ruleSets = []
 
@@ -11,7 +11,7 @@ const onUrlChange = async (_tabId, changeInfo, tab) => {
   if (!url) return
 
   const ruleSet = ruleSets.find(ruleSet => ruleSet.patterns.some(pattern => url.includes(pattern)))
-  addTabToTabGroup(tab, ruleSet)
+  addTabsToTabGroup([tab], ruleSet)
 }
 
 const syncAndListen = () => {
