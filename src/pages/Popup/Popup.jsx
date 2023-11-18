@@ -6,6 +6,7 @@ import PatternSelector from './PatternSelector';
 import addTabsToTabGroup from '../Utils/addTabsToTabGroup';
 import debounce from '../Utils/debounce';
 import t from '../Translations/t';
+import getHost from '../Utils/getHost';
 
 const debouncedStorageSet = debounce((key, data) => {
   chrome.storage.sync.set({ [key]: data });
@@ -18,7 +19,7 @@ const Popup = () => {
 
   const [currentTab, setCurrentTab] = useState(null);
   const currentUrl = currentTab?.url;
-  const currentHost = currentUrl && new URL(currentTab.url).host;
+  const currentHost = getHost(currentUrl);
   const [isCurrentTabMissingLabel, setIsCurrentTabMissingLabel] = useState(true);
   const isLoadingCurrentTab = !currentTab;
 
